@@ -37,11 +37,12 @@ class MouseHook:
     @LowLevelMouseProc
     def hook_proc(nCode, wParam, lParam) -> ctypes.c_int:
         if nCode == 0:
-            if wParam == Constants.WM_LBUTTONDOWN:
-                MouseHook.isPressed = True
+            match (wParam):
+                case Constants.WM_LBUTTONDOWN:
+                    MouseHook.isPressed = True
 
-            elif wParam == Constants.WM_LBUTTONUP:
-                MouseHook.isPressed = False
+                case Constants.WM_LBUTTONUP:
+                    MouseHook.isPressed = False
 
         return MouseHook.user32.CallNextHookEx(None, nCode, wParam, lParam)
 
@@ -52,7 +53,7 @@ class MouseHook:
 
         if os.getenv("TEST_HOOK") == "1":
             def _click():
-                time.sleep(0.5)
+                time.sleep(0.1)
                 MouseHook.user32.mouse_event(Constants.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
                 MouseHook.user32.mouse_event(Constants.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
             threading.Thread(target=_click, daemon=True).start()
