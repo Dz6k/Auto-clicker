@@ -4,6 +4,7 @@ import threading
 import time
 from ctypes import wintypes
 from dataclasses import dataclass
+from typing import NoReturn
 
 @dataclass(frozen=True)
 class Constants:
@@ -14,6 +15,8 @@ class Constants:
     MOUSEEVENTF_LEFTUP = 0x0004
 
 class MouseHook:
+    isPressed: bool = False
+
     user32 = ctypes.windll.user32
     kernel32 = ctypes.windll.kernel32
 
@@ -32,10 +35,33 @@ class MouseHook:
 
     @staticmethod
     @LowLevelMouseProc
-    def hook_proc(nCode, wParam, lParam):
+    def hook_proc(nCode, wParam, lParam) -> ctypes.c_int:
         if nCode == 0:
             if wParam == Constants.WM_LBUTTONDOWN:
-                print(True, flush=True)
+                MouseHook.isPressed = True
+
             elif wParam == Constants.WM_LBUTTONUP:
-                print(False, flush=True)
+                MouseHook.isPressed = False
+
         return MouseHook.user32.CallNextHookEx(None, nCode, wParam, lParam)
+
+    @staticmethod
+    def run() -> NoReturn:
+        hook_id = MouseHook.user32.SetWindowsHookExW(Constants.WH_MOUSE_LL, MouseHook.hook_proc, 0, 0)
+        msg = wintypes.MSG()
+
+        if os.getenv("TEST_HOOK") == "1":
+            def _click():
+                time.sleep(0.5)
+                MouseHook.user32.mouse_event(Constants.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+                MouseHook.user32.mouse_event(Constants.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+            threading.Thread(target=_click, daemon=True).start()
+
+        while MouseHook.user32.GetMessageW(ctypes.byref(msg), None, 0, 0) != 0:
+            MouseHook.user32.TranslateMessage(ctypes.byref(msg))
+            MouseHook.user32.DispatchMessageW(ctypes.byref(msg))
+        MouseHook.user32.UnhookWindowsHookEx(hook_id)
+
+    @classmethod
+    def pressed(cls) -> bool:
+        return cls.isPressed
