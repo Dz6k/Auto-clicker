@@ -62,7 +62,3 @@ class MouseHook:
             MouseHook.user32.TranslateMessage(ctypes.byref(msg))
             MouseHook.user32.DispatchMessageW(ctypes.byref(msg))
         MouseHook.user32.UnhookWindowsHookEx(hook_id)
-
-    @classmethod
-    def pressed(cls) -> bool:
-        return cls.isPressed
