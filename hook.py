@@ -29,3 +29,13 @@ class MouseHook:
     user32.GetMessageW.restype = wintypes.BOOL
     user32.TranslateMessage.argtypes = [ctypes.POINTER(wintypes.MSG)]
     user32.DispatchMessageW.argtypes = [ctypes.POINTER(wintypes.MSG)]
+
+    @staticmethod
+    @LowLevelMouseProc
+    def hook_proc(nCode, wParam, lParam):
+        if nCode == 0:
+            if wParam == Constants.WM_LBUTTONDOWN:
+                print(True, flush=True)
+            elif wParam == Constants.WM_LBUTTONUP:
+                print(False, flush=True)
+        return MouseHook.user32.CallNextHookEx(None, nCode, wParam, lParam)
