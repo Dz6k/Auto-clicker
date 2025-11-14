@@ -7,12 +7,14 @@ from dataclasses import dataclass
 from typing import NoReturn
 
 @dataclass(frozen=True)
-class Constants:
+class Mouse:
     WH_MOUSE_LL = 14
     WM_LBUTTONDOWN = 0x0201
     WM_LBUTTONUP = 0x0202
     MOUSEEVENTF_LEFTDOWN = 0x0002
     MOUSEEVENTF_LEFTUP = 0x0004
+    MOUSEEVENTF_RIGHTDOWN = 0x0008
+    MOUSEEVENTF_RIGHTUP = 0x0010
 
 class MouseHook:
     isPressed: bool = False
@@ -38,24 +40,24 @@ class MouseHook:
     def hook_proc(nCode, wParam, lParam) -> ctypes.c_int:
         if nCode == 0:
             match (wParam):
-                case Constants.WM_LBUTTONDOWN:
+                case Mouse.WM_LBUTTONDOWN:
                     MouseHook.isPressed = True
 
-                case Constants.WM_LBUTTONUP:
+                case Mouse.WM_LBUTTONUP:
                     MouseHook.isPressed = False
 
         return MouseHook.user32.CallNextHookEx(None, nCode, wParam, lParam)
 
     @staticmethod
     def run() -> NoReturn:
-        hook_id = MouseHook.user32.SetWindowsHookExW(Constants.WH_MOUSE_LL, MouseHook.hook_proc, 0, 0)
+        hook_id = MouseHook.user32.SetWindowsHookExW(Mouse.WH_MOUSE_LL, MouseHook.hook_proc, 0, 0)
         msg = wintypes.MSG()
 
         if os.getenv("TEST_HOOK") == "1":
             def _click():
                 time.sleep(0.1)
-                MouseHook.user32.mouse_event(Constants.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
-                MouseHook.user32.mouse_event(Constants.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+                MouseHook.user32.mouse_event(Mouse.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+                MouseHook.user32.mouse_event(Mouse.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
             threading.Thread(target=_click, daemon=True).start()
 
         while MouseHook.user32.GetMessageW(ctypes.byref(msg), None, 0, 0) != 0:
