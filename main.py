@@ -11,11 +11,7 @@ class AutoClicker:
         self._enable = True
         self._last_state = False
         threading.Thread(None, lambda: MouseHook.run(), daemon=True).start()
-
-    @property
-    def is_leftmouse_down(self) -> bool: 
-        return win32api.GetKeyState(0x01) < 0
-     
+        
     def stop(self) -> NoReturn:
         key_home = keyboard.is_pressed('home')
         if key_home != self._last_state:
@@ -26,9 +22,8 @@ class AutoClicker:
     def run(self) -> NoReturn:
         while True:
             self.stop()
-            if self._enable:
-                if MouseHook.isPressed:
-                    MouseHook.send_click()
+            if self._enable and MouseHook.isPressed:
+                MouseHook.send_click()
 
             sleep(0.026)
 
