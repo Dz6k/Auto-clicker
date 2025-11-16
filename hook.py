@@ -101,7 +101,7 @@ class MouseHook:
         MouseHook.user32.UnhookWindowsHookEx(hook_id)
 
     @staticmethod
-    def send_click():
+    def send_click() -> NoReturn:
         inp_down = INPUT(type=Mouse.INPUT_MOUSE, mi=MOUSEINPUT(0,0,0,Mouse.MOUSEEVENTF_LEFTDOWN,0,None))
         MouseHook.user32.SendInput(1, ctypes.byref(inp_down), ctypes.sizeof(INPUT))
         time.sleep(0.057)
