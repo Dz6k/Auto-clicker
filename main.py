@@ -77,7 +77,7 @@ def run_ui(app):
     init(autoreset=True)
     title = 'AUTO CLICKER'
     subtitle = 'By: dz6k'
-    binds = '\n\bHOME para pausar/voltar\n\bCTRL+F1 para sair\n\bPAGEUP: atualizar config\n'
+    binds = '\n\bHOME para pausar/rodar\n\bCTRL+F1 para sair\n\bPAGEUP para atualizar config\n'
     status_stopped = '[ - ] STOPPED'
     status_running = '[ + ] RUNNING'
     max_status_len = max(len(status_stopped), len(status_running))
