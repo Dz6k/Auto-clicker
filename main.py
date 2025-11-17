@@ -5,7 +5,7 @@ import time
 import win32api
 from typing import NoReturn
 import keyboard
-
+import os
 
 class AutoClicker:
     def __init__(self) -> NoReturn:
@@ -23,11 +23,16 @@ class AutoClicker:
                 if self._last_state:
                     self._enable = not self._enable
 
+    def _exit(self) -> NoReturn:
+        if keyboard.is_pressed('ctrl+f1'):
+            os._exit(0)
+        
     def run(self) -> NoReturn:
         while True:
             now = time.time()
             self.stop()
-
+            self._exit()
+            
             if self._enable and MouseHook.isPressed:
                 MouseHook.send_click()
 
