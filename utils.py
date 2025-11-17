@@ -20,7 +20,8 @@ class Default:
     
 class Config:
     def __init__(self) -> NoReturn:
-        self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json')
+        self.path = 'config.json'
+
 
     def create(self) -> NoReturn:
         with open(self.path, 'w', encoding='utf-8') as f:

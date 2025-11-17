@@ -15,7 +15,7 @@ import shutil
 class AutoClicker:
     def __init__(self) -> NoReturn:
         self.config = Config()
-        self._enable = True
+        self._enable = False
         self._last_state = False
         self._last_bump = time.time()
         self._shutdown = False
@@ -77,7 +77,7 @@ def run_ui(app):
     init(autoreset=True)
     title = 'AUTO CLICKER'
     subtitle = 'By: dz6k'
-    binds = 'binds: \n\bHOME para pausar/voltar\n\bCTRL+F1 para sair\n\bPAGEUP: atualizar config'
+    binds = '\n\bHOME para pausar/voltar\n\bCTRL+F1 para sair\n\bPAGEUP: atualizar config\n'
     status_stopped = '[ - ] STOPPED'
     status_running = '[ + ] RUNNING'
     max_status_len = max(len(status_stopped), len(status_running))
