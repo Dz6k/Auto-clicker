@@ -6,7 +6,7 @@ import json
 @dataclass
 class Var:
     interval: float
-    delta: float
+    variation: float
     time_bump: float
     
     
@@ -29,8 +29,10 @@ class Config:
     def load(self) -> Var:
         with open(self.path, 'r', encoding='utf-8') as f:
             data = json.load(f)
+             
             return Var(
                 interval=data.get('interval', Default.data['interval']),
-                delta=data.get('variation', Default.data['variation']),
+                variation=data.get('variation', Default.data['variation']),
                 time_bump=data.get('time_bump', Default.data['time_bump'])
             )
+            
