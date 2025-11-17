@@ -5,8 +5,8 @@ import time
 from typing import NoReturn
 import keyboard
 import os
-import json
 from utils import Var, Config
+from threading import Thread
 
 class AutoClicker:
     def __init__(self) -> NoReturn:
@@ -17,8 +17,6 @@ class AutoClicker:
         self._last_bump = time.time()
         self._load_config()
         threading.Thread(None, lambda: MouseHook.run(), daemon=True).start()
-        
-    def _wellcome(self) -> NoReturn: ...
         
     def _load_config(self) -> NoReturn:
         if not os.path.exists(self.config.path):
@@ -52,5 +50,7 @@ class AutoClicker:
 
             sleep(Var.interval)
 
+if __name__ == '__main__':
 
-AutoClicker().run()
+    app = AutoClicker()
+    Thread(target=app.run()).start()	
